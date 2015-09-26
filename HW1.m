@@ -9,39 +9,40 @@ Total_Distance = 0;                                                             
 WallSensor = WallSensorReadRoomba(serPort);
 
 while (WallSensor ~= 1)
+    display('while1');
     % Read sensors
     [BumpRight, BumpLeft, WheelDropRight, WheelDropLeft, WheelDropCastor, BumpFront] = BumpsWheelDropsSensorsRoomba(serPort); % Read Bumpers
     WallSensor = WallSensorReadRoomba(serPort);
     % DEBUG Print sensor values if it is triggered
-%     if(BumpLeft ~= 0)
-%         display(BumpLeft)
-%     end
-%     if(BumpRight ~= 0)
-%         display(BumpRight)
-%     end
-%     if(BumpFront)
-%         display(BumpFront)
-%     end
-%     if(WallSensor ~= 0)
-%         display(WallSensor)
-%     end
-%     
+    if(BumpLeft ~= 0)
+        display(BumpLeft)
+    end
+    if(BumpRight ~= 0)
+        display(BumpRight)
+    end
+    if(BumpFront)
+        display(BumpFront)
+    end
+    if(WallSensor ~= 0)
+        display(WallSensor)
+    end
+    
     % Turn wall sensor to face wall, or move forward until hit wall
     if(BumpRight)
         % Right side bump into wall, turn left 45 degrees
-        turnAngle(serPort, 0.5, 45);
+        turnAngle(serPort, 0.1, 45);
         SetFwdVelRadiusRoomba(serPort, 0, inf);
     elseif(BumpFront)
         % Front side bump into wall, turn left 90 degrees
-        turnAngle(serPort, 0.5, 90);
+        turnAngle(serPort, 0.1, 90);
         SetFwdVelRadiusRoomba(serPort, 0, inf);         % Stop
     elseif(BumpLeft)
         % Left side bump into wall, turn left 135 degrees
-        turnAngle(serPort, 0.5, 135);
+        turnAngle(serPort, 0.1, 135);
         SetFwdVelRadiusRoomba(serPort, 0, inf);
     else
         % Hasn't bumped into wall, keep moving forward
-        SetFwdVelRadiusRoomba(serPort, 0.5, inf);
+        SetFwdVelRadiusRoomba(serPort, 0.1, inf);
         % Update the Total_Distance covered so far
         Total_Distance = Total_Distance + DistanceSensorRoomba(serPort);    
 %         display(Total_Distance)
@@ -51,19 +52,33 @@ while (WallSensor ~= 1)
     
 end
 
-while true 
+while 1 
+    display('while2');
     % Read sensors
     [BumpRight, BumpLeft, WheelDropRight, WheelDropLeft, WheelDropCastor, BumpFront] = BumpsWheelDropsSensorsRoomba(serPort); % Read Bumpers
     WallSensor = WallSensorReadRoomba(serPort);
     
+    if(BumpLeft ~= 0)
+        display(BumpLeft)
+    end
+    if(BumpRight ~= 0)
+        display(BumpRight)
+    end
+    if(BumpFront)
+        display(BumpFront)
+    end
+    if(WallSensor ~= 0)
+        display(WallSensor)
+    end
+    
     if ~WallSensor
-        turnAngle(serPort, 0.5, -10);
+        turnAngle(serPort, 0.1, -10);
         SetFwdVelRadiusRoomba(serPort, 0, inf);
     elseif BumpFront
-        turnAngle(serPort, 0.5, 90);
+        turnAngle(serPort, 0.1, 90);
         SetFwdVelRadiusRoomba(serPort, 0, inf);
     else 
-        SetFwdVelRadiusRoomba(serPort, 0.5, inf);
+        SetFwdVelRadiusRoomba(serPort, 0.1, inf);
         Total_Distance = Total_Distance + DistanceSensorRoomba(serPort); 
     end
 
