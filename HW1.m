@@ -57,6 +57,7 @@ end
 %% Follow the wall until back to original hit point
 d_dist = DistanceSensorRoomba(serPort);                     % Reset distance difference sensor
 d_theta = AngleSensorRoomba(serPort);                        % Reset angle difference sensor
+no_wall_count = 0;                                                               % Counter for consecutive right turn made because wall not detected
 while 1 
     display('while2');
     % Read sensors
@@ -70,8 +71,9 @@ while 1
     pos_x = pos_x + sin(pos_theta) * d_dist;
     pos_y = pos_y + cos(pos_theta) * d_dist;
     
-    % Update distance to first hit point
-    dist = sqrt(pos_x^2 + pos_y^2);
+    % Update distances
+    dist = sqrt(pos_x^2 + pos_y^2);                                     % Distance from first hit point
+    total_distance = total_distance + d_dist;                      % Distance accumulated from starting point
     
     % Set flag to true when leaving the threshold range after first hit
     if (dist > thr)
@@ -100,20 +102,31 @@ while 1
     display(WallSensor)
     end
     
-    % Strategy to follow the wall
+    %% Strategy to follow the wall
     if BumpFront
+        % Front side bumped into wall, turn left 90 degrees
         turnAngle(serPort, 0.1, 90);
         SetFwdVelRadiusRoomba(serPort, 0, inf);
+        no_wall_count = 0;                                          % Reset counter since not consecutively no wall anymore
     elseif (BumpRight)
         turnAngle(serPort, 0.1, 10);
         SetFwdVelRadiusRoomba(serPort, 0.1, inf);
+        no_wall_count = 0;                                          % Reset counter since not consecutively no wall anymore
     elseif ~WallSensor
-        turnAngle(serPort, 0.05, -5);
-        SetFwdVelRadiusRoomba(serPort, 0.1, inf);
+        if no_wall_count == 1
+            % If consecutively not detecting wall, turn right more in place
+            % and reset counter
+            turnAngle(serPort, 0.05, -5);
+            no_wall_count = 0;                                     % Reset counter since not consecutively no wall anymore
+        else
+            % First time not detecting wall, turn right and move forward
+            turnAngle(serPort, 0.05, -5);
+            SetFwdVelRadiusRoomba(serPort, 0.1, inf);
+            no_wall_count = no_wall_count + 1;         % Increase counter because consecutively no wall
+        end
     else 
         SetFwdVelRadiusRoomba(serPort, 0.2, inf);
-        % Accumulate distance since first hit point
-        total_distance = total_distance + d_dist; 
+        no_wall_count = 0;                                         % Reset counter since not consecutively no wall anymore 
     end
 
     % Pause before next loop
