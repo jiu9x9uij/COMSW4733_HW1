@@ -2,11 +2,12 @@ function  HW1(serPort)
 
 %% Move forward until hit wall and get ready to follow wall
 % Variable Declaration
-tStart= tic;                                                                             % Time limit marker
-maxDuration = 20;                                                               % 20 seconds of max duration time
-Initial_Distance = DistanceSensorRoomba(serPort);     % Get the Initial Distance
 Total_Distance = 0;                                                             % Initialize Total Distance
-WallSensor = WallSensorReadRoomba(serPort);
+pos_x = 0;
+pos_y = 0;
+pos_theta = 0;
+flag = false;                                                                           % If left threshold range after first hit, change to true
+thr = 0.05;
 
 while 1
     display('while1');
@@ -45,22 +46,14 @@ while 1
         break;
     else
         % Hasn't bumped into wall, keep moving forward
-        SetFwdVelRadiusRoomba(serPort, 0.1, inf);
-        % Update the Total_Distance covered so far
-        Total_Distance = Total_Distance + DistanceSensorRoomba(serPort);    
-%         display(Total_Distance)
+        SetFwdVelRadiusRoomba(serPort, 0.3, inf);
     end
     
     pause(0.1);
     
 end
 
-pos_x = 0;
-pos_y = 0;
-pos_theta = 0;
-flag = false; % if left threshold after first hit, change to true
-thr = 0.2;
-
+%% Follow the wall until back to original hit point
 while 1 
     display('while2');
     % Read sensors
@@ -96,31 +89,32 @@ while 1
         display(BumpFront)
     end
     if(WallSensor ~= 0)
-        display(WallSensor)
+    display(WallSensor)
     end
     
     if BumpFront
         turnAngle(serPort, 0.1, 90);
         SetFwdVelRadiusRoomba(serPort, 0, inf);
-    elseif (BumpRight && WallSensor)
-        turnAngle(serPort, 0.1, 3);
+    elseif (BumpRight)
+        turnAngle(serPort, 0.1, 10);
         SetFwdVelRadiusRoomba(serPort, 0.1, inf);
     elseif ~WallSensor
-        turnAngle(serPort, 0.1, -15);
-        SetFwdVelRadiusRoomba(serPort, 0, inf);
-    else 
+        turnAngle(serPort, 0.05, -5);
         SetFwdVelRadiusRoomba(serPort, 0.1, inf);
+    else 
+        SetFwdVelRadiusRoomba(serPort, 0.2, inf);
+        % Accumulate distance since first hit point
         Total_Distance = Total_Distance + DistanceSensorRoomba(serPort); 
     end
 
     pause(0.1); 
    
 end
-%% Follow the wall until back to original hit point
-% while not back to original place...
 
-%% Stop and display the Total_Distance covered so far
+%% Stop
 SetFwdVelRadiusRoomba(serPort, 0, inf);                                       
-display(Total_Distance)                                             
+display(Total_Distance) 
+display(pos_x);
+display(pos_y);
 
 end
