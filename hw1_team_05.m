@@ -1,9 +1,14 @@
-%%%%%%%%%%%%%%%%%%
-%% Team 5                                 %%
-%% Hua Tong (ht2334)            %%
-%% Mengdi Zhang (mz2472)  %%
-%% Yilin Long (yl3179)            %%
-%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%
+%% Team 5                                                                                                                                                                                           %%
+%% Hua Tong (ht2334)                                                                                                                                                                      %%
+%% Mengdi Zhang (mz2472)                                                                                                                                                            %%
+%% Yilin Long (yl3179)                                                                                                                                                                      %%
+%%                                                                                                                                                                                                          %%
+%% Please find the following demo videos to see some examples of the expected performance of our program %%
+%% https://www.youtube.com/watch?v=M7d6kci41KY                                                                                                           %%
+%% https://www.youtube.com/watch?v=0xXMM22f9SQ                                                                                                         %%
+%% https://www.youtube.com/watch?v=Kkt-AnTr-TY                                                                                                             %%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%
 
 function  hw1_team_05(serPort)
 
